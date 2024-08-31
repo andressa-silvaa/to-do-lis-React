@@ -56,11 +56,14 @@ a:hover {
 }
 
 h2 {
+    font-size: 3em;
     font-weight: bold;
+    margin: 0;
+    text-align: center;
 }
 
 p {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 0;
     text-align: center;
 }
@@ -94,12 +97,12 @@ button{
     font-weight: 600;
     transition: background-color 0.3s ease; 
 }
-.cadastrar{
+.login-cadastrar{
     background-color: #D6EDFF;
     color: grey;
     
 }
-.entrar,.entrar:hover, .cadastrar:hover{
+.login-entrar,.login-entrar:hover, .login-cadastrar:hover{
     background-color: #478978; 
     color: white;
 }
@@ -109,8 +112,19 @@ button{
 
 
 
+
 @media (max-width: 768px) {
     .col-md-6 {
         padding: 0;
+    }
+}
+@media (max-width: 900px) {
+    .img-container::before {
+        width: 80%; 
+        height: 80%; 
+    }
+
+    .img-fluid {
+        width: 80%; 
     }
 }

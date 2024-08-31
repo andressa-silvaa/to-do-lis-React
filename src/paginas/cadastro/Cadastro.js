@@ -1,14 +1,14 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import  '../estilos/Login.css';
-import pandaImage from '../assets/img/panda.png'; 
+import  './Cadastro.css';
+import pandaImage from '../../assets/img/panda.png'; 
 import { useNavigate } from 'react-router-dom'; 
 
-function Login() {
+function Cadastro() {
   const navigate = useNavigate(); 
 
   const handleRegisterClick = () => {
-    navigate('/cadastrar'); 
+    navigate('/login'); 
   };
 
   return (
@@ -20,10 +20,14 @@ function Login() {
           </div>
         </div>
         <div className="col-md-6 d-flex flex-column justify-content-start align-items-center p-4">
-          <h2>Bem vindo(a) de volta!</h2>
-          <p>Pronto(a) para conquistar mais um dia?</p>
+          <h2>Bem vindo(a) à To do list!</h2>
+          <p>Crie sua conta e comece a organizar sua vida com estilo.</p>
           <div className="center-form">
             <form>
+              <div className="mb-3">
+                <label htmlFor="nome" className="form-label">Como podemos te chamar? *</label>
+                <input type="text" id="nome" name="nome" className="form-control" required />
+              </div>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">E-mail: *</label>
                 <input type="email" id="email" name="email" className="form-control" required />
@@ -33,11 +37,11 @@ function Login() {
                 <input type="password" id="password" name="password" className="form-control" required />
               </div>
               <div className="mb-3">
-                <a href="/forgot-password">Esqueceu a senha?</a>
+                <a href="/login">Já tem uma conta?</a>
               </div>
               <div className="d-flex justify-content-between">
-                  <button type="submit" className="btn btn-success me-2 entrar">Entrar</button>
-                  <button type="button" className="btn btn-success cadastrar" onClick={handleRegisterClick}>Cadastrar</button>
+                  <button type="submit" className="btn btn-success me-2 entrar"  onClick={handleRegisterClick}>Entrar</button>
+                  <button type="button" className="btn btn-success cadastrar">Cadastrar</button>
               </div>
             </form>
           </div>
@@ -47,4 +51,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Cadastro;

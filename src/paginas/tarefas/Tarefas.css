@@ -1,0 +1,60 @@
+.task-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.task-description {
+    margin-bottom: 10px;
+}
+
+.task-priority {
+    background-color: #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.task-priority.alta {
+    background-color: #f08080;
+}
+
+.task-priority.médio {
+    background-color: #ffff00;
+}
+
+.task-priority.baixa {
+    background-color: #90ee90;
+}
+
+.task-category {
+    background-color: #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.task-category.mercado {
+    background-color: #00b050;
+}
+
+.task-category.trabalho {
+    background-color: #ffa500;
+}
+
+.task-category.financeiro {
+    background-color: #800080;
+}
+
+.task-category.hobbies {
+    background-color: #ff69b4;
+}

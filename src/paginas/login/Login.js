@@ -1,13 +1,14 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import '../estilos/Cadastro.css'; 
-import pandaImage from '../assets/img/panda.png'; 
+import  './Login.css';
+import pandaImage from '../../assets/img/panda.png'; 
 import { useNavigate } from 'react-router-dom'; 
-function Cadastro() {
+
+function Login() {
   const navigate = useNavigate(); 
 
   const handleRegisterClick = () => {
-    navigate('/login'); 
+    navigate('/cadastro'); 
   };
 
   return (
@@ -35,8 +36,8 @@ function Cadastro() {
                 <a href="/forgot-password">Esqueceu a senha?</a>
               </div>
               <div className="d-flex justify-content-between">
-                  <button type="submit" className="btn btn-success me-2 entrar"  onClick={handleRegisterClick}>Entrar</button>
-                  <button type="button" className="btn btn-success cadastrar">Cadastrar</button>
+                  <button type="submit" className="btn btn-success me-2 login-entrar">Entrar</button>
+                  <button type="button" className="btn btn-success login-cadastrar" onClick={handleRegisterClick}>Cadastrar</button>
               </div>
             </form>
           </div>
@@ -46,4 +47,4 @@ function Cadastro() {
   );
 }
 
-export default Cadastro;
+export default Login;

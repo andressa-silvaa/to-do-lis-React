@@ -56,11 +56,14 @@ a:hover {
 }
 
 h2 {
+    font-size: 3em;
     font-weight: bold;
+    margin: 0;
+    text-align: center;
 }
 
 p {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 0;
     text-align: center;
 }
@@ -112,5 +115,15 @@ button{
 @media (max-width: 768px) {
     .col-md-6 {
         padding: 0;
+    }
+}
+@media (max-width: 900px) {
+    .img-container::before {
+        width: 80%; 
+        height: 80%; 
+    }
+
+    .img-fluid {
+        width: 80%; 
     }
 }
