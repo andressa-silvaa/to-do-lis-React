@@ -1,0 +1,167 @@
+body {
+    background-color: gainsboro;
+}
+
+.tarefas-pendentes-completas {
+    width: 31%;
+    text-align: left;
+    font-weight: bold;
+    color: gray;
+    font-size: 1.3em;
+    margin-right: 40px;
+    background-color: #D6EDFF;
+}
+
+.tarefas-completas-completas {
+    background-color: #478978;
+    text-align: left;
+    width: 31%;
+    color: white;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.tarefas-pendentes-completas:hover,
+.tarefas-completas-completas:hover {
+    background-color: #478978;
+    color: white;
+}
+
+
+.pendenteImg,
+.validoImg {
+    max-height: 20px;
+    margin-top: -2px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.task-card {
+    position: relative;
+    background-color: white !important;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    height: 300px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+}
+
+.task-description-container {
+    flex-grow: 1; 
+    max-height: 120px; 
+    overflow-y: auto; 
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    text-align: justify;
+}
+
+.task-description {
+    margin: 0; 
+    text-align: justify; 
+}
+
+.task-priority {
+    background-color: #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 20%;
+    text-align: center;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.task-priority.alta {
+    background-color: #f08080;
+}
+
+.task-priority.médio {
+    background-color: #ffff00;
+}
+
+.task-priority.baixa {
+    font-size: 0.8em;
+    margin-bottom: 15px;
+    background-color: #90ee90;
+}
+
+.task-category-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+.categoria {
+    background-color: #ffa500 !important; 
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+
+.task-category {
+    font-size: 0.8em;
+    display: flex;
+    gap: 10px;
+}
+
+.task-category i {
+    display: flex;
+    align-items: end;
+}
+
+.task-category span {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.task-category.mercado span {
+    background-color: #00b050;
+}
+
+.task-category.trabalho span {
+    background-color: #ffa500;
+}
+
+.task-category.financeiro span {
+    background-color: #800080;
+}
+
+.task-category.hobbies span {
+    background-color: #ff69b4;
+}
+
+.task-menu {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    z-index: 10; 
+}
+
+.task-menu button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    min-width: 20px; 
+    text-align: center;
+}

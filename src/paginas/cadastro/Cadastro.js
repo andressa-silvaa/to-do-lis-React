@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function Cadastro() {
   const navigate = useNavigate(); 
 
-  const handleRegisterClick = () => {
+  const handleLoginClick = () => {
     navigate('/login'); 
   };
 
@@ -40,7 +40,7 @@ function Cadastro() {
                 <a href="/login">Já tem uma conta?</a>
               </div>
               <div className="d-flex justify-content-between">
-                  <button type="submit" className="btn btn-success me-2 entrar"  onClick={handleRegisterClick}>Entrar</button>
+                  <button type="submit" className="btn btn-success me-2 entrar"  onClick={handleLoginClick}>Entrar</button>
                   <button type="button" className="btn btn-success cadastrar">Cadastrar</button>
               </div>
             </form>
