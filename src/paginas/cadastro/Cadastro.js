@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Cadastro.css';
 import pandaImage from '../../assets/img/panda.png'; 
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';  // Importando axios
 
 function Cadastro() {
   const navigate = useNavigate(); 
@@ -63,33 +64,30 @@ function Cadastro() {
       return;
     }
 
-
     try {
       console.log('Iniciando requisição para a API...');
-      const response = await fetch('https://to-do-list-api-git-main-andressas-projects-37c54a16.vercel.app/usuario', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nome, email, senha })
+      const response = await axios.post('https://to-do-list-api-eight.vercel.app/usuario', {
+        nome,
+        email,
+        senha
       });
-  
-      const responseBody = await response.text();
-      if (!response.ok) {
-        if (responseBody.mensagem === 'Já existe usuário cadastrado com o e-mail informado.') {
-          console.log(responseBody)
-          setAlert({ show: true, message: responseBody.mensagem, type: 'danger' });
-        } else {
-          throw new Error('Erro ao enviar os dados: ' + response.statusText);
-        }
-        return;
+
+      // Supondo que a resposta é um objeto JSON com a mensagem
+      if (response.data.mensagem === 'Já existe usuário cadastrado com o e-mail informado.') {
+        setAlert({ show: true, message: response.data.mensagem, type: 'danger' });
+      } else {
+        setAlert({ show: true, message: 'Usuário cadastrado com sucesso!', type: 'success' });
+        setTimeout(() => navigate('/login'), 1000);
       }
-      console.log(responseBody)
-      setAlert({ show: true, message: 'Usuário cadastrado com sucesso!', type: 'success' });
-      setTimeout(() => navigate('/login'), 1000);
     } catch (error) {
-      console.error('Erro no fetch:', error);
-      setAlert({ show: true, message: 'Ocorreu um erro ao cadastrar: ' + error.message, type: 'danger' });
+      console.error('Erro no axios:', error);
+      if (error.response) {
+        // Exibindo mensagem de erro com base na resposta do servidor
+        setAlert({ show: true, message: 'Ocorreu um erro ao cadastrar: ' + (error.response.data.mensagem || error.message), type: 'danger' });
+      } else {
+        // Erro ao configurar a requisição ou outro erro
+        setAlert({ show: true, message: 'Ocorreu um erro ao cadastrar: ' + error.message, type: 'danger' });
+      }
     }
   };
 

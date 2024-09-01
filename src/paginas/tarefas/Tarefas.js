@@ -7,6 +7,7 @@ import validoImg from '../../assets/img/valido.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Tarefas.css';
 
+
 function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);

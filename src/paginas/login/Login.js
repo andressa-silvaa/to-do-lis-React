@@ -1,30 +1,33 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import React, { useState, useCallback } from 'react';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
-import pandaImage from '../../assets/img/panda.png'; 
-import { useNavigate } from 'react-router-dom'; 
+import pandaImage from '../../assets/img/panda.png';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexto/UserContext'; 
 
 function Login() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const { setUser } = useUser(); // Obtém a função setUser do contexto
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
 
   const [emailTouched, setEmailTouched] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [senhaTouched, setSenhaTouched] = useState(false);
 
   const [errors, setErrors] = useState({
     email: '',
-    password: ''
+    senha: ''
   });
 
   const [alert, setAlert] = useState({ show: false, message: '', type: 'danger' });
 
-  const validate = () => {
+  const validate = useCallback(() => {
     let isValid = true;
     const newErrors = {
       email: '',
-      password: ''
+      senha: ''
     };
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -32,52 +35,48 @@ function Login() {
       isValid = false;
     }
 
-    if (password.length < 8 || password.length > 20) {
-      newErrors.password = 'A senha deve ter entre 8 e 20 caracteres.';
+    if (senha.length < 8 || senha.length > 20) {
+      newErrors.senha = 'A senha deve ter entre 8 e 20 caracteres.';
       isValid = false;
     }
 
     setErrors(newErrors);
     return isValid;
-  };
+  }, [email, senha]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
     setEmailTouched(true);
-    setPasswordTouched(true);
+    setSenhaTouched(true);
 
-    const isValid = validate();
-    if (!isValid) {
+    if (!validate()) {
       setAlert({ show: true, message: 'Há campos inválidos. Por favor, corrija-os.', type: 'danger' });
       return;
     }
 
     try {
-      console.log('Iniciando requisição para a API...');
-      const response = await fetch('https://to-do-list-api-git-main-andressas-projects-37c54a16.vercel.app/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
+      const response = await axios.post('https://to-do-list-api-eight.vercel.app/login', {
+        email,
+        senha
       });
-
-      const responseBody = await response.json();
-      if (!response.ok) {
-        throw new Error(responseBody.message || 'Erro ao enviar os dados.');
-      }
-
+      
+      // Atualiza o contexto com os dados do usuário
+      setUser(response.data.usuario);
+      
       setAlert({ show: true, message: 'Login realizado com sucesso!', type: 'success' });
       setTimeout(() => navigate('/tarefas'), 1000);
     } catch (error) {
-      console.error('Erro no fetch:', error);
-      setAlert({ show: true, message: 'Ocorreu um erro ao fazer login: ' + error.message, type: 'danger' });
+      if (error.response) {
+        setAlert({ show: true, message: 'Ocorreu um erro ao fazer login: ' + (error.response.data.mensagem || error.message), type: 'danger' });
+      } else {
+        setAlert({ show: true, message: 'Ocorreu um erro ao fazer login: ' + error.message, type: 'danger' });
+      }
     }
-  };
+  }, [email, senha, navigate, validate, setUser]);
 
   const handleRegisterClick = () => {
-    navigate('/cadastro'); 
+    navigate('/cadastro');
   };
 
   return (
@@ -101,31 +100,31 @@ function Login() {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">E-mail: *</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  className={`form-control ${emailTouched && errors.email ? 'is-invalid' : ''}`} 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  onBlur={() => setEmailTouched(true)} 
-                  required 
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`form-control ${emailTouched && errors.email ? 'is-invalid' : ''}`}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  required
                 />
                 {emailTouched && errors.email && <div className="invalid-feedback">{errors.email}</div>}
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">Senha: *</label>
-                <input 
-                  type="password" 
-                  id="password" 
-                  name="password" 
-                  className={`form-control ${passwordTouched && errors.password ? 'is-invalid' : ''}`} 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  onBlur={() => setPasswordTouched(true)} 
-                  required 
+                <label htmlFor="senha" className="form-label">Senha: *</label>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  className={`form-control ${senhaTouched && errors.senha ? 'is-invalid' : ''}`}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  onBlur={() => setSenhaTouched(true)}
+                  required
                 />
-                {passwordTouched && errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                {senhaTouched && errors.senha && <div className="invalid-feedback">{errors.senha}</div>}
               </div>
               <div className="mb-3">
                 <a href="/forgot-password">Esqueceu a senha?</a>

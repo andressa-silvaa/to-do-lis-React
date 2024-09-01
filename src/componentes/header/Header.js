@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 import pandaIO from '../../assets/img/panda.io.png';
 import userImg from '../../assets/img/usuario.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useUser } from '../../contexto/UserContext';
 
 function Header() {
+  const { user, logout } = useUser(); 
+  const navigate = useNavigate(); 
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
@@ -20,9 +23,9 @@ function Header() {
   };
 
   const handleLogout = () => {
-    // Adicione a lógica de logout aqui
-    console.log('Deslogar');
-    setShowMenu(false); // Fecha o menu após o logout
+    logout(); 
+    navigate('/login'); 
+    setShowMenu(false);
   };
 
   const handleClickOutside = (event) => {
@@ -55,14 +58,9 @@ function Header() {
         <div className="d-flex align-items-center justify-content-between w-100">
           <img src={pandaIO} alt="Tasks Logo" className="logo-left" />
           <div className="d-flex align-items-center position-relative">
-            <h3 className="mb-0">Usuário</h3>
+            <h3 className="mb-0">{user ? user.nome : 'Visitante'}</h3>
             <div className="position-relative">
-              <img 
-                src={userImg} 
-                alt="Botão usuário" 
-                className="logo-user ms-2 cursor-pointer" 
-                onClick={handleUserClick} 
-              />
+              <img src={userImg} alt="Botão usuário" className="logo-user ms-2 cursor-pointer" onClick={handleUserClick} />
               {showMenu && (
                 <div className="user-menu position-absolute" ref={menuRef}>
                   <a href="#logout" onClick={handleLogout}>Sair</a>
