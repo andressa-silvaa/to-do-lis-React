@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import pendenteImg from '../../assets/img/pendente.png'; 
 import validoImg from '../../assets/img/valido.png'; 
@@ -8,10 +9,24 @@ import './Tarefas.css';
 
 function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    priority: 'alta',
+    complete: 'nao',
+    category: '',
+  });
+  const [categories, setCategories] = useState([
+    'Trabalho', 'Estudo', 'Mercado', 'Financeiro', 'Saúde',
+    'Hobby', 'Casa', 'Social', 'Desenvolvimento Pessoal', 'Projetos Pessoais',
+    'Família', 'Viagens', 'Tecnologia', 'Voluntariado', 'Entretenimento','Outra'
+  ]);
+  
   const menuRef = useRef(null);
 
   const handleMenuToggle = (index) => {
-    setShowMenu(showMenu == index ? null : index);
+    setShowMenu(showMenu === index ? null : index);
   };
 
   const handleClickOutside = (event) => {
@@ -30,6 +45,22 @@ function Tarefas() {
   const handleCompleteClick = () => {
     navigate('/tarefas-completas'); 
   };
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aqui você pode adicionar a lógica para salvar a nova tarefa
+    console.log(formData);
+    handleCloseModal();
+  };
+
   return (
     <div className="container mt-5">
       {/* Botões de filtros */}
@@ -43,7 +74,7 @@ function Tarefas() {
           </button>
         </div>
         <div className="col-md-12 d-flex justify-content-start mt-3">
-          <button className="btn btn-primary nova-tarefa">
+          <button className="btn btn-primary nova-tarefa" onClick={handleShowModal}>
             <i className="fas fa-plus" style={{ marginRight: '8px' }}></i>Nova Tarefa
           </button>
         </div>
@@ -84,6 +115,100 @@ function Tarefas() {
           </div>
         ))}
       </div>
+
+      {/* Modal para adicionar tarefa */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Adicionar Nova Tarefa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="custom-form-group" controlId="formTitle">
+              <Form.Label>Título</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Digite o título da tarefa"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="custom-form-group" controlId="formDescription">
+              <Form.Label>Descrição</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Digite a descrição da tarefa"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="custom-form-group" controlId="formPriority">
+              <Form.Label>Prioridade</Form.Label>
+              <Form.Control
+                as="select"
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                required
+              >
+                <option value="alta">Alta</option>
+                <option value="média">Média</option>
+                <option value="baixa">Baixa</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="custom-form-group" controlId="formComplete">
+              <Form.Label>Completa</Form.Label>
+              <Form.Check
+                type="radio"
+                label="Sim"
+                name="complete"
+                value="sim"
+                checked={formData.complete === 'sim'}
+                onChange={handleChange}
+                required
+              />
+              <Form.Check
+                type="radio"
+                label="Não"
+                name="complete"
+                value="nao"
+                checked={formData.complete === 'nao'}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="custom-form-group" controlId="formCategory">
+              <Form.Label>Categoria</Form.Label>
+              <Form.Control
+                as="select"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecione uma categoria</option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>{category}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Modal.Footer className="custom-modal-footer">
+              <Button variant="dark" type="submit" className="custom-button">
+                Adicionar Tarefa
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

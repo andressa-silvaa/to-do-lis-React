@@ -1,0 +1,62 @@
+.header {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header-auth {
+    background-color: transparent;
+  }
+  
+  .auth-left {
+    background-color: #D6EDFF;
+  }
+  
+  .auth-right {
+    background-color: none;
+  }
+  
+  .auth-right .logo-right {
+    margin-right: 10px;
+  }
+  
+  .header-tasks {
+    background-color: white;
+  }
+  .header-tasks h3{
+    margin-right: 20px;
+  }
+  .header-tasks .logo-left {
+    margin-right: auto;
+    margin-left: 10px;
+  }
+  .logo-user {
+    height: 40px;
+    cursor: pointer; 
+  }
+  
+  .user-menu {
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    right: 0; 
+    width: 150px;
+    z-index: 1000;
+  }
+  
+  .user-menu a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 5px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  
+  .user-menu a:hover {
+    background-color: #f0f0f0;
+  }
+  

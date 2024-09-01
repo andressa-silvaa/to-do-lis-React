@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './componentes/Header';
-import Footer from './componentes/Footer';
+import Header from './componentes/header/Header';
 import Login from './paginas/login/Login';
 import Cadastro from './paginas/cadastro/Cadastro';
 import Tarefas from './paginas/tarefas/Tarefas';
@@ -11,6 +10,7 @@ function App() {
   return (
     <Router>
       <main>
+        <Header/>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />

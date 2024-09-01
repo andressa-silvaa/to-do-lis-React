@@ -108,7 +108,26 @@ button{
 }
 
 
-
+.fixed-top {
+    position: fixed;
+    top: 1rem; /* Ajuste conforme necessário */
+    right: 1rem; /* Ajuste conforme necessário */
+    z-index: 1050; /* Certifique-se de que está acima de outros elementos */
+  }
+  
+  .alert-dismissible .btn-close {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+  
+  .top-right {
+    width: auto;
+    max-width: 90%;
+    margin:auto;
+  }
+  
 
 
 
