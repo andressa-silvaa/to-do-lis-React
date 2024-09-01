@@ -76,7 +76,7 @@ p {
     align-items: center;
     justify-content: center;
     position: relative;
-    top: -60px; 
+    top: -90px; 
 }
 
 form{
@@ -139,6 +139,9 @@ button{
 @media (max-width: 768px) {
     .col-md-6 {
         padding: 0;
+    }
+    .center-form{
+        top:20px;
     }
 }
 @media (max-width: 900px) {
