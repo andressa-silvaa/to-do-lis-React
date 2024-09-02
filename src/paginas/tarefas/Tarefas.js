@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,7 +7,7 @@ import pendenteImg from '../../assets/img/pendente.png';
 import validoImg from '../../assets/img/valido.png'; 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Tarefas.css';
-
+import { useUser } from '../../contexto/UserContext'; 
 
 function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
@@ -18,13 +19,36 @@ function Tarefas() {
     complete: 'nao',
     category: '',
   });
-  const [categories, setCategories] = useState([
-    'Trabalho', 'Estudo', 'Mercado', 'Financeiro', 'Saúde',
-    'Hobby', 'Casa', 'Social', 'Desenvolvimento Pessoal', 'Projetos Pessoais',
-    'Família', 'Viagens', 'Tecnologia', 'Voluntariado', 'Entretenimento','Outra'
-  ]);
-  
+  const [tasks, setTasks] = useState([]); // Estado para armazenar as tarefas recebidas da API
   const menuRef = useRef(null);
+
+  const navigate = useNavigate();
+  const { token } = useUser(); // Use o token do contexto
+
+  useEffect(() => {
+    // Fazer a requisição para listar as tarefas
+    const fetchTasks = async () => {
+      try {
+        if (!token) {
+          console.error('Token não encontrado no contexto');
+          return;
+        }
+
+        const response = await axios.get('https://to-do-list-api-eight.vercel.app/tarefas', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        console.log('Tarefas recebidas:', response.data);
+        setTasks(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar as tarefas:', error);
+      }
+    };
+
+    fetchTasks();
+  }, [token]); // Adicione o token às dependências
 
   const handleMenuToggle = (index) => {
     setShowMenu(showMenu === index ? null : index);
@@ -40,8 +64,6 @@ function Tarefas() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const navigate = useNavigate(); 
 
   const handleCompleteClick = () => {
     navigate('/tarefas-completas'); 
@@ -62,6 +84,9 @@ function Tarefas() {
     handleCloseModal();
   };
 
+  // Defina as categorias, ou substitua pela importação se for o caso
+  const categories = ['Trabalho', 'Pessoal', 'Estudo'];
+
   return (
     <div className="container mt-5">
       {/* Botões de filtros */}
@@ -81,13 +106,13 @@ function Tarefas() {
         </div>
       </div>
       
-      {/* Cartões de tarefas */}
+      {/* Cartões de tarefas dinâmicos */}
       <div className="card-container row">
-        {[1, 2, 3, 4].map((_, index) => (
-          <div className="col-md-4" key={index}>
+        {tasks.map((task, index) => (
+          <div className="col-md-4" key={task.id}>
             <div className="task-card">
               <div className="d-flex justify-content-between align-items-center position-relative">
-                <h5 className="task-title">Título da Tarefa {index + 1}</h5>
+                <h5 className="task-title">{task.titulo}</h5>
                 <button className="btn btn-light mais" onClick={() => handleMenuToggle(index)}>
                   <i className="fas fa-ellipsis-h"></i>
                 </button>
@@ -100,17 +125,17 @@ function Tarefas() {
                   </div>
                 )}
               </div>
-              <div className="task-priority alta">Alta</div>
+              <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
               <div className="task-description-container">
                 <p className="task-description">
-                  Descrição da tarefa {index + 1}.
+                  {task.descricao}
                 </p>
               </div>
               <div className="d-flex justify-content-between task-category-container">
                 <div className="task-category">
-                  <i className="fas fa-flag"></i> Data
+                  <i className="fas fa-flag"></i> {task.completa ? 'Completa' : 'Pendente'}
                 </div>
-                <span className="categoria">Categoria</span>
+                <span className="categoria">{task.categoria}</span>
               </div>
             </div>
           </div>
@@ -179,10 +204,9 @@ function Tarefas() {
                 type="radio"
                 label="Não"
                 name="complete"
-                value="nao"
-                checked={formData.complete === 'nao'}
+                value="não"
+                checked={formData.complete === 'não'}
                 onChange={handleChange}
-                required
               />
             </Form.Group>
 
@@ -195,18 +219,15 @@ function Tarefas() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Selecione uma categoria</option>
                 {categories.map((category, index) => (
                   <option key={index} value={category}>{category}</option>
                 ))}
               </Form.Control>
             </Form.Group>
 
-            <Modal.Footer className="custom-modal-footer">
-              <Button variant="dark" type="submit" className="custom-button">
-                Adicionar Tarefa
-              </Button>
-            </Modal.Footer>
+            <Button variant="primary" type="submit">
+              Adicionar Tarefa
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>

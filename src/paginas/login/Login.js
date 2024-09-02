@@ -8,7 +8,7 @@ import { useUser } from '../../contexto/UserContext';
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser } = useUser(); // Obtém a função setUser do contexto
+  const { login } = useUser();
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -61,8 +61,8 @@ function Login() {
         senha
       });
       
-      // Atualiza o contexto com os dados do usuário
-      setUser(response.data.usuario);
+
+      login(response.data.usuario, response.data.token); 
       
       setAlert({ show: true, message: 'Login realizado com sucesso!', type: 'success' });
       setTimeout(() => navigate('/tarefas'), 1000);
@@ -73,7 +73,7 @@ function Login() {
         setAlert({ show: true, message: 'Ocorreu um erro ao fazer login: ' + error.message, type: 'danger' });
       }
     }
-  }, [email, senha, navigate, validate, setUser]);
+  }, [email, senha, navigate, validate, login]);
 
   const handleRegisterClick = () => {
     navigate('/cadastro');

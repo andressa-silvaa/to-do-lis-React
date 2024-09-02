@@ -152,7 +152,7 @@ body {
     z-index: 10; 
 }
 form{
-    width: 100%;
+    width: 100%!important;
 }
 .modal-title {
     color: gray;
@@ -235,4 +235,5 @@ form{
   .custom-button,  .custom-button:hover {
     background-color: #478978; 
     font-weight: 600;
+    width: 150px;
   }
