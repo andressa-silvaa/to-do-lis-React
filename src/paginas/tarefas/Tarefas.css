@@ -240,3 +240,20 @@ form{
     font-weight: 600;
     width: 150px;
   }
+@media (max-width:1000px) {
+    .tarefas-completas {
+        width: 60%;
+    }
+}
+@media (max-width:500px) {
+    .tarefas-completas {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .tarefas-pendentes {
+        width: 100%;
+    }
+    .nova-tarefa{
+        width: 100%;
+    }
+}

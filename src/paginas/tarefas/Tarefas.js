@@ -245,13 +245,13 @@ function Tarefas() {
         )}
       </div>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+  <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Adicionar Nova Tarefa</Modal.Title>
+          <Modal.Title>Adicionar Tarefa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formTitulo">
+            <Form.Group className="custom-form-group" controlId="formTitulo">
               <Form.Label>Título</Form.Label>
               <Form.Control
                 type="text"
@@ -263,7 +263,8 @@ function Tarefas() {
               />
               <Form.Control.Feedback type="invalid">{errors.titulo}</Form.Control.Feedback>
             </Form.Group>
-            <Form.Group controlId="formDescricao">
+
+            <Form.Group className="custom-form-group" controlId="formDescricao">
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 as="textarea"
@@ -276,7 +277,8 @@ function Tarefas() {
               />
               <Form.Control.Feedback type="invalid">{errors.descricao}</Form.Control.Feedback>
             </Form.Group>
-            <Form.Group controlId="formPrioridade">
+
+            <Form.Group className="custom-form-group" controlId="formPrioridade">
               <Form.Label>Prioridade</Form.Label>
               <Form.Control
                 as="select"
@@ -289,7 +291,13 @@ function Tarefas() {
                 <option value="baixa">Baixa</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="formCategoria">
+
+            <Form.Group className="custom-form-group" controlId="formCompleta">
+
+              <Form.Control.Feedback type="invalid">{errors.completa}</Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="custom-form-group" controlId="formCategoria">
               <Form.Label>Categoria</Form.Label>
               <Form.Control
                 as="select"
@@ -299,30 +307,30 @@ function Tarefas() {
                 isInvalid={!!errors.categoria}
               >
                 <option value="">Selecione uma categoria</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
-              </Form.Control>
               <Form.Control.Feedback type="invalid">{errors.categoria}</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="formCompleta">
+              </Form.Control>
+              <Form.Label>Status</Form.Label>
               <Form.Check
                 type="radio"
-                label="Completa"
+                label="concluída"
                 name="completa"
-                value={true}
+                value="true"
                 checked={formData.completa === true}
                 onChange={handleRadioChange}
               />
               <Form.Check
                 type="radio"
-                label="Pendente"
+                label="pendente"
                 name="completa"
-                value={false}
+                value="false"
                 checked={formData.completa === false}
                 onChange={handleRadioChange}
               />
-              {errors.completa && <div className="text-danger">{errors.completa}</div>}
             </Form.Group>
             <Modal.Footer>
               <Button variant="primary" type="submit" className='custom-button'>

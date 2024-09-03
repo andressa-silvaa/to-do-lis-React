@@ -151,3 +151,17 @@ body {
     min-width: 20px; 
     text-align: center;
 }
+@media (max-width:1000px) {
+    .tarefas-completas-completas {
+        width: 60%;
+    }
+}
+@media (max-width:500px) {
+    .tarefas-completas-completas {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .tarefas-pendentes-completas {
+        width: 100%;
+    }
+}
