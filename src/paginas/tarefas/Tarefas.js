@@ -20,11 +20,7 @@ function Tarefas() {
     categoria: '',
   });
   const [tasks, setTasks] = useState([]);
-  const [errors, setErrors] = useState({
-    titulo: '',
-    descricao: '',
-    completa: ''
-  });
+  const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'danger' });
   const menuRef = useRef(null);
 
@@ -84,38 +80,30 @@ function Tarefas() {
       completa: false,
       categoria: '',
     });
-    setErrors({
-      titulo: '',
-      descricao: '',
-      completa: ''
-    });
+    setErrors({});
   };
 
   const validate = () => {
-    let isValid = true;
-    const newErrors = {
-      titulo: '',
-      descricao: '',
-      completa: ''
-    };
+    const newErrors = {};
 
-    if (formData.titulo.length < 3 || formData.titulo.length > 100) {
+    if (!formData.titulo || formData.titulo.length < 3 || formData.titulo.length > 100) {
       newErrors.titulo = 'O título deve ter entre 3 e 100 caracteres.';
-      isValid = false;
     }
 
-    if (formData.descricao.length < 10 || formData.descricao.length > 500) {
+    if (!formData.descricao || formData.descricao.length < 10 || formData.descricao.length > 500) {
       newErrors.descricao = 'A descrição deve ter entre 10 e 500 caracteres.';
-      isValid = false;
     }
 
     if (typeof formData.completa !== 'boolean') {
       newErrors.completa = 'O campo completa deve ser um valor booleano (true ou false).';
-      isValid = false;
+    }
+
+    if (!formData.categoria) {
+      newErrors.categoria = 'Por favor, selecione uma categoria.';
     }
 
     setErrors(newErrors);
-    return isValid;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
@@ -129,45 +117,48 @@ function Tarefas() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const isValid = validate();
-    if (!isValid) {
+  
+    if (!validate()) {
       setAlert({ show: true, message: 'Há campos inválidos. Por favor, corrija-os.', type: 'danger' });
       setTimeout(() => {
         setAlert({ show: false });
-      }, 3000); // Alerta some após 3 segundos
+      }, 3000);
       return;
     }
-
+  
     try {
       if (!token) {
         console.error('Token não encontrado no contexto');
         return;
       }
+  
       const response = await axios.post('https://to-do-list-api-eight.vercel.app/tarefa', formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
+  
       console.log('Tarefa adicionada com sucesso:', response.data);
-      setTasks(prevTasks => [response.data, ...prevTasks]); 
+  
+      // Adiciona a nova tarefa no início da lista de tarefas
+      setTasks(prevTasks => [response.data.tarefa, ...prevTasks]);
+  
       handleCloseModal();
       setAlert({ show: true, message: 'Tarefa adicionada com sucesso!', type: 'success' });
       setTimeout(() => {
         setAlert({ show: false });
-      }, 3000); // Alerta some após 3 segundos
+      }, 3000);
     } catch (error) {
       console.error('Erro ao adicionar a tarefa:', error);
       setAlert({ show: true, message: 'Ocorreu um erro ao adicionar a tarefa: ' + (error.response?.data?.mensagem || error.message), type: 'danger' });
       setTimeout(() => {
         setAlert({ show: false });
-      }, 3000); // Alerta some após 3 segundos
+      }, 3000);
     }
   };
-
-  const categories = ['Trabalho', 'Pessoal', 'Estudo','Casa','Saúde','Compras','Projetos','Eventos','Finanças','Lazer','Outro'];
-
+  
+  
+  const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
 
   return (
     <div className="container mt-5">
@@ -194,43 +185,47 @@ function Tarefas() {
       </div>
       
       <div className="card-container row">
-        {tasks.map((task) => (
-          <div className="col-md-4" key={task.id}>
-            <div className="task-card">
-              <div className="d-flex justify-content-between align-items-center position-relative">
-                <h5 className="task-title">{task.titulo}</h5>
-                <button className="btn btn-light mais" onClick={() => handleMenuToggle(task.id)}>
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
-                {showMenu === task.id && (
-                  <div className="task-menu" ref={menuRef}>
-                    <button className="btn btn-danger"><i className="fas fa-trash"></i></button>
-                    <button className="btn btn-success"><i className="fas fa-check"></i></button>
-                    <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
-                    <button className="btn btn-info"><i className="fas fa-expand"></i></button>
-                  </div>
-                )}
-              </div>
-              <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
-              <div className="task-description-container">
-                <p className="task-description">
-                  {task.descricao}
-                </p>
-              </div>
-              <div className="d-flex justify-content-between task-category-container">
-                <div className="task-category">
-                  <i className="fas fa-flag"></i> {task.completa ? 'Completa' : 'Pendente'}
+        {tasks.length > 0 ? (
+          tasks.map((task) => (
+            <div className="col-md-4" key={task.id}>
+              <div className="task-card">
+                <div className="d-flex justify-content-between align-items-center position-relative">
+                  <h5 className="task-title">{task.titulo}</h5>
+                  <button className="btn btn-light mais" onClick={() => handleMenuToggle(task.id)}>
+                    <i className="fas fa-ellipsis-h"></i>
+                  </button>
+                  {showMenu === task.id && (
+                    <div className="task-menu" ref={menuRef}>
+                      <button className="btn btn-danger"><i className="fas fa-trash"></i></button>
+                      <button className="btn btn-success"><i className="fas fa-check"></i></button>
+                      <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
+                      <button className="btn btn-info"><i className="fas fa-expand"></i></button>
+                    </div>
+                  )}
                 </div>
-                <span className="categoria">{task.categoria}</span>
+                <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
+                <div className="task-description-container">
+                  <p className="task-description">
+                    {task.descricao}
+                  </p>
+                </div>
+                <div className="d-flex justify-content-between task-category-container">
+                  <div className="task-category">
+                    <i className="fas fa-flag"></i> {task.completa ? 'Completa' : 'Pendente'}
+                  </div>
+                  <span className="categoria">{task.categoria}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Nenhuma tarefa encontrada.</p>
+        )}
       </div>
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Adicionar Nova Tarefa</Modal.Title>
+          <Modal.Title>Adicionar Tarefa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -238,32 +233,27 @@ function Tarefas() {
               <Form.Label>Título</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Digite o título da tarefa"
+                placeholder="Digite o título"
                 name="titulo"
                 value={formData.titulo}
                 onChange={handleChange}
                 isInvalid={!!errors.titulo}
-                required
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.titulo}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.titulo}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="custom-form-group" controlId="formDescricao">
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 as="textarea"
-                placeholder="Digite a descrição da tarefa"
+                rows={3}
+                placeholder="Digite a descrição"
                 name="descricao"
                 value={formData.descricao}
                 onChange={handleChange}
                 isInvalid={!!errors.descricao}
-                required
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.descricao}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.descricao}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="custom-form-group" controlId="formPrioridade">
@@ -273,7 +263,6 @@ function Tarefas() {
                 name="prioridade"
                 value={formData.prioridade}
                 onChange={handleChange}
-                required
               >
                 <option value="alta">Alta</option>
                 <option value="media">Média</option>
@@ -282,32 +271,24 @@ function Tarefas() {
             </Form.Group>
 
             <Form.Group className="custom-form-group" controlId="formCompleta">
-              <Form.Label>Status</Form.Label>
-              <div>
-                <Form.Check
-                  inline
-                  type="radio"
-                  label="Completa"
-                  name="completa"
-                  value="true"
-                  checked={formData.completa === true}
-                  onChange={handleRadioChange}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  label="Pendente"
-                  name="completa"
-                  value="false"
-                  checked={formData.completa === false}
-                  onChange={handleRadioChange}
-                />
-              </div>
-              {errors.completa && (
-                <div className="invalid-feedback d-block">
-                  {errors.completa}
-                </div>
-              )}
+              <Form.Label>Completa</Form.Label>
+              <Form.Check
+                type="radio"
+                label="Sim"
+                name="completa"
+                value="true"
+                checked={formData.completa === true}
+                onChange={handleRadioChange}
+              />
+              <Form.Check
+                type="radio"
+                label="Não"
+                name="completa"
+                value="false"
+                checked={formData.completa === false}
+                onChange={handleRadioChange}
+              />
+              <Form.Control.Feedback type="invalid">{errors.completa}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="custom-form-group" controlId="formCategoria">
@@ -317,22 +298,21 @@ function Tarefas() {
                 name="categoria"
                 value={formData.categoria}
                 onChange={handleChange}
-                required
+                isInvalid={!!errors.categoria}
               >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                <option value="">Selecione uma categoria</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
                   </option>
                 ))}
               </Form.Control>
+              <Form.Control.Feedback type="invalid">{errors.categoria}</Form.Control.Feedback>
             </Form.Group>
-
-            <Modal.Footer className="custom-modal-footer">
-              <div className="d-flex justify-content-end">
-                <Button variant="dark" type="submit" className="custom-button">
-                  Adicionar Tarefa
-                </Button>
-              </div>
+            <Modal.Footer>
+              <Button variant="primary" type="submit" className='custom-button'>
+                Adicionar
+              </Button>
             </Modal.Footer>
           </Form>
         </Modal.Body>
@@ -342,9 +322,3 @@ function Tarefas() {
 }
 
 export default Tarefas;
-
-
-
-
-
-
