@@ -1,6 +1,19 @@
 body {
     background-color: gainsboro;
 }
+.task-priority.alta {
+    background-color: #f08080;
+}
+
+.task-priority.media {
+    background-color: #FF8C00;
+}
+
+.task-priority.baixa {
+    font-size: 0.8em;
+    margin-bottom: 15px;
+    background-color: #90ee90;
+}
 
 .tarefas-pendentes {
     background-color: #478978;

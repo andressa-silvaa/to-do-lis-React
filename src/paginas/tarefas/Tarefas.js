@@ -42,7 +42,11 @@ function Tarefas() {
         });
 
         console.log('Tarefas recebidas:', response.data);
-        setTasks(response.data);
+
+        // Ordena as tarefas pela data de cadastro em ordem decrescente
+        const sortedTasks = response.data.sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro));
+        
+        setTasks(sortedTasks);
       } catch (error) {
         console.error('Erro ao buscar as tarefas:', error);
       }
@@ -141,7 +145,7 @@ function Tarefas() {
       console.log('Tarefa adicionada com sucesso:', response.data);
   
       // Adiciona a nova tarefa no início da lista de tarefas
-      setTasks(prevTasks => [response.data.tarefa, ...prevTasks]);
+      setTasks(prevTasks => [response.data.tarefa, ...prevTasks].sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro)));
   
       handleCloseModal();
       setAlert({ show: true, message: 'Tarefa adicionada com sucesso!', type: 'success' });
@@ -156,6 +160,7 @@ function Tarefas() {
       }, 3000);
     }
   };
+
 
   const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
   const categoryColors = {
