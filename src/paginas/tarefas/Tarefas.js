@@ -156,9 +156,21 @@ function Tarefas() {
       }, 3000);
     }
   };
-  
-  
+
   const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
+  const categoryColors = {
+    Trabalho: '#f08080',
+    Pessoal: '#800080',
+    Estudo: '#FF7F50',
+    Casa: '#5F9EA0',
+    Saúde: '#87cefa',
+    Compras: '#ff5722',
+    Projetos: '#9c27b0',
+    Eventos: '#3f51b5',
+    Finanças: '#00bcd4',
+    Lazer: '#8bc34a',
+    Outro: '#9e9e9e'
+  };
 
   return (
     <div className="container mt-5">
@@ -183,7 +195,7 @@ function Tarefas() {
           </button>
         </div>
       </div>
-      
+
       <div className="card-container row">
         {tasks.length > 0 ? (
           tasks.map((task) => (
@@ -213,7 +225,12 @@ function Tarefas() {
                   <div className="task-category">
                     <i className="fas fa-flag"></i> {task.completa ? 'Completa' : 'Pendente'}
                   </div>
-                  <span className="categoria">{task.categoria}</span>
+                  <span 
+                    className="categoria" 
+                    style={{ backgroundColor: categoryColors[task.categoria] || '#9e9e9e' }} // Usa a cor correspondente à categoria
+                  >
+                    {task.categoria}
+                  </span>
                 </div>
               </div>
             </div>
@@ -225,11 +242,11 @@ function Tarefas() {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Adicionar Tarefa</Modal.Title>
+          <Modal.Title>Adicionar Nova Tarefa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="custom-form-group" controlId="formTitulo">
+            <Form.Group controlId="formTitulo">
               <Form.Label>Título</Form.Label>
               <Form.Control
                 type="text"
@@ -241,8 +258,7 @@ function Tarefas() {
               />
               <Form.Control.Feedback type="invalid">{errors.titulo}</Form.Control.Feedback>
             </Form.Group>
-
-            <Form.Group className="custom-form-group" controlId="formDescricao">
+            <Form.Group controlId="formDescricao">
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 as="textarea"
@@ -255,8 +271,7 @@ function Tarefas() {
               />
               <Form.Control.Feedback type="invalid">{errors.descricao}</Form.Control.Feedback>
             </Form.Group>
-
-            <Form.Group className="custom-form-group" controlId="formPrioridade">
+            <Form.Group controlId="formPrioridade">
               <Form.Label>Prioridade</Form.Label>
               <Form.Control
                 as="select"
@@ -269,29 +284,7 @@ function Tarefas() {
                 <option value="baixa">Baixa</option>
               </Form.Control>
             </Form.Group>
-
-            <Form.Group className="custom-form-group" controlId="formCompleta">
-              <Form.Label>Completa</Form.Label>
-              <Form.Check
-                type="radio"
-                label="Sim"
-                name="completa"
-                value="true"
-                checked={formData.completa === true}
-                onChange={handleRadioChange}
-              />
-              <Form.Check
-                type="radio"
-                label="Não"
-                name="completa"
-                value="false"
-                checked={formData.completa === false}
-                onChange={handleRadioChange}
-              />
-              <Form.Control.Feedback type="invalid">{errors.completa}</Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="custom-form-group" controlId="formCategoria">
+            <Form.Group controlId="formCategoria">
               <Form.Label>Categoria</Form.Label>
               <Form.Control
                 as="select"
@@ -301,13 +294,30 @@ function Tarefas() {
                 isInvalid={!!errors.categoria}
               >
                 <option value="">Selecione uma categoria</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
                 ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">{errors.categoria}</Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group controlId="formCompleta">
+              <Form.Check
+                type="radio"
+                label="Completa"
+                name="completa"
+                value={true}
+                checked={formData.completa === true}
+                onChange={handleRadioChange}
+              />
+              <Form.Check
+                type="radio"
+                label="Pendente"
+                name="completa"
+                value={false}
+                checked={formData.completa === false}
+                onChange={handleRadioChange}
+              />
+              {errors.completa && <div className="text-danger">{errors.completa}</div>}
             </Form.Group>
             <Modal.Footer>
               <Button variant="primary" type="submit" className='custom-button'>

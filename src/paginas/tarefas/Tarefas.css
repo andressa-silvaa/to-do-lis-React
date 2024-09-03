@@ -125,12 +125,13 @@ body {
 }
 
 .task-category span {
+    font-weight: bold;
+    color: #D6EDFF;
     padding: 5px;
     border-radius: 5px;
 }
 
 .categoria {
-    background-color: #ffa500 !important; 
     padding: 5px;
     border-radius: 5px;
     font-size: 0.8em;

@@ -104,7 +104,8 @@ body {
     padding-top: 10px;
 }
 .categoria {
-    background-color: #ffa500 !important; 
+    font-weight: bold;
+    color: white;
     padding: 5px;
     border-radius: 5px;
     font-size: 0.8em;
@@ -124,22 +125,6 @@ body {
 .task-category span {
     padding: 5px;
     border-radius: 5px;
-}
-
-.task-category.mercado span {
-    background-color: #00b050;
-}
-
-.task-category.trabalho span {
-    background-color: #ffa500;
-}
-
-.task-category.financeiro span {
-    background-color: #800080;
-}
-
-.task-category.hobbies span {
-    background-color: #ff69b4;
 }
 
 .task-menu {
