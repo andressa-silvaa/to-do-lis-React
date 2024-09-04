@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import pendenteImg from '../../assets/img/pendente.png'; 
-import validoImg from '../../assets/img/valido.png'; 
+import pendenteImg from '../../assets/img/pendente.png';
+import validoImg from '../../assets/img/valido.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Tarefas.css';
-import { useUser } from '../../contexto/UserContext'; 
-import { format } from 'date-fns'; 
+import { useUser } from '../../contexto/UserContext';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
@@ -25,6 +27,7 @@ function Tarefas() {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ show: false, message: '', type: 'danger' });
   const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const navigate = useNavigate();
   const { token } = useUser();
@@ -45,7 +48,6 @@ function Tarefas() {
 
         console.log('Tarefas recebidas:', response.data);
 
-        // Ordena as tarefas pela data de cadastro em ordem decrescente
         const sortedTasks = response.data.sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro));
         
         setTasks(sortedTasks);
@@ -58,22 +60,27 @@ function Tarefas() {
   }, [token]);
 
   const handleMenuToggle = (index) => {
-    setShowMenu(showMenu === index ? null : index);
+    setShowMenu((prevShowMenu) => (prevShowMenu === index ? null : index));
   };
 
   const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
+    if (
+      menuRef.current && !menuRef.current.contains(event.target) &&
+      buttonRef.current && !buttonRef.current.contains(event.target)
+    ) {
       setShowMenu(null);
     }
   };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleCompleteClick = () => {
-    navigate('/tarefas-completas'); 
+    navigate('/tarefas-completas');
   };
 
   const handleShowModal = () => setShowModal(true);
@@ -146,7 +153,6 @@ function Tarefas() {
   
       console.log('Tarefa adicionada com sucesso:', response.data);
   
-      // Adiciona a nova tarefa no início da lista de tarefas
       setTasks(prevTasks => [response.data.tarefa, ...prevTasks].sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro)));
   
       handleCloseModal();
@@ -163,7 +169,45 @@ function Tarefas() {
     }
   };
 
+  const handleDeleteClick = (taskId) => {
+    setTaskToDelete(taskId);
+    setShowConfirmModal(true);
+  };
 
+  const handleCloseConfirmModal = () => {
+    setShowConfirmModal(false);
+    setTaskToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!token) {
+        console.error('Token não encontrado no contexto');
+        return;
+      }
+  
+      await axios.delete(`https://to-do-list-api-eight.vercel.app/tarefa/${taskToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete));
+      setAlert({ show: true, message: 'Tarefa excluída com sucesso!', type: 'success' });
+      setTimeout(() => {
+        setAlert({ show: false });
+      }, 2000);
+  
+    } catch (error) {
+      console.error('Erro ao excluir a tarefa:', error);
+      setAlert({ show: true, message: 'Ocorreu um erro ao excluir a tarefa: ' + (error.response?.data?.mensagem || error.message), type: 'danger' });
+      setTimeout(() => {
+        setAlert({ show: false });
+      }, 2000);
+    } finally {
+      handleCloseConfirmModal();
+    }
+  };
   const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
   const categoryColors = {
     Trabalho: '#f08080',
@@ -210,17 +254,19 @@ function Tarefas() {
         <div className="task-card">
           <div className="d-flex justify-content-between align-items-center position-relative">
             <h5 className="task-title">{task.titulo}</h5>
-            <button className="btn btn-light mais" onClick={() => handleMenuToggle(task.id)}>
+            <button
+              className="btn btn-light mais"
+              onClick={() => handleMenuToggle(task.id)}
+            >
               <i className="fas fa-ellipsis-h"></i>
             </button>
-            {showMenu === task.id && (
+            {showMenu == task.id && (
               <div className="task-menu" ref={menuRef}>
-                <button className="btn btn-danger"><i className="fas fa-trash"></i></button>
+                <button className="btn btn-danger" onClick={() => handleDeleteClick(task.id)}><i className="fas fa-trash"></i></button>
                 <button className="btn btn-success"><i className="fas fa-check"></i></button>
                 <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
                 <button className="btn btn-info"><i className="fas fa-expand"></i></button>
-              </div>
-            )}
+              </div>)}
           </div>
           <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
           <div className="task-description-container">
@@ -324,7 +370,7 @@ function Tarefas() {
                 label="concluída"
                 name="completa"
                 value="true"
-                checked={formData.completa === true}
+                checked={formData.completa == true}
                 onChange={handleRadioChange}
               />
               <Form.Check
@@ -332,7 +378,7 @@ function Tarefas() {
                 label="pendente"
                 name="completa"
                 value="false"
-                checked={formData.completa === false}
+                checked={formData.completa == false}
                 onChange={handleRadioChange}
               />
             </Form.Group>
@@ -343,6 +389,17 @@ function Tarefas() {
             </Modal.Footer>
           </Form>
         </Modal.Body>
+      </Modal>
+
+      <Modal show={showConfirmModal} onHide={handleCloseConfirmModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Exclusão</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Tem certeza de que deseja excluir esta tarefa?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirmModal}>Cancelar</Button>
+          <Button variant="danger" onClick={handleDelete}>Excluir</Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

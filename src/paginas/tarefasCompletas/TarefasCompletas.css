@@ -150,8 +150,9 @@ hr{
     display: flex;
     align-items: center;
     gap: 5px;
+    justify-content: center;
     padding: 5px;
-    min-width: 20px; 
+    width: 50px;
     text-align: center;
 }
 @media (max-width:1000px) {
