@@ -8,6 +8,8 @@ import validoImg from '../../assets/img/valido.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Tarefas.css';
 import { useUser } from '../../contexto/UserContext'; 
+import { format } from 'date-fns'; 
+import { ptBR } from 'date-fns/locale';
 
 function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
@@ -226,9 +228,11 @@ function Tarefas() {
                     {task.descricao}
                   </p>
                 </div>
+                <hr/>
                 <div className="d-flex justify-content-between task-category-container">
                   <div className="task-category">
-                    <i className="fas fa-flag"></i> {task.completa ? 'Completa' : 'Pendente'}
+                    <i className="fas fa-flag"></i> {format(new Date(task.dataCadastro), 'dd MMM yy', { locale: ptBR })}
+
                   </div>
                   <span 
                     className="categoria" 
