@@ -15,6 +15,8 @@ function Tarefas() {
   const [showMenu, setShowMenu] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [taskToComplete, setTaskToComplete] = useState(null); 
+  const [showCompleteConfirmModal, setShowCompleteConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [formData, setFormData] = useState({
     titulo: '',
@@ -208,6 +210,68 @@ function Tarefas() {
       handleCloseConfirmModal();
     }
   };
+  
+  const handleComplete = async () => {
+    try {
+      if (!token) {
+        console.error('Token não encontrado no contexto');
+        return;
+      }
+  
+      // Encontre a tarefa que está sendo completada
+      const taskToUpdate = tasks.find(task => task.id === taskToComplete);
+  
+      if (!taskToUpdate) {
+        console.error('Tarefa não encontrada');
+        return;
+      }
+  
+      // Crie um objeto contendo todos os campos necessários para a atualização
+      const updatedTaskData = {
+        titulo: taskToUpdate.titulo,        // Campo obrigatório 'titulo'
+        descricao: taskToUpdate.descricao,  // Campo opcional (ou obrigatório, se aplicável)
+        categoria: taskToUpdate.categoria,  // Campo obrigatório 'categoria'
+        prioridade: taskToUpdate.prioridade, // Campo obrigatório 'prioridade'
+        completa: true,                      // Atualize o campo 'completa'
+        // Inclua outros campos que a API exige
+      };
+  
+      const response = await axios.put(`https://to-do-list-api-eight.vercel.app/tarefa/${taskToComplete}`, updatedTaskData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      // Atualize a lista de tarefas no estado local
+      setTasks(prevTasks => prevTasks.map(task =>
+        task.id === taskToComplete ? { ...task, completa: true } : task
+      ));
+      setAlert({ show: true, message: 'Tarefa marcada como completa!', type: 'success' });
+      setTimeout(() => {
+        setAlert({ show: false });
+      }, 2000);
+  
+    } catch (error) {
+      console.error('Erro ao marcar a tarefa como completa:', error);
+      setAlert({ show: true, message: 'Ocorreu um erro ao marcar a tarefa como completa: ' + (error.response?.data?.mensagem || error.message), type: 'danger' });
+      setTimeout(() => {
+        setAlert({ show: false });
+      }, 2000);
+    } finally {
+      handleCloseCompleteConfirmModal();
+    }
+  };
+  
+  
+  const handleCloseCompleteConfirmModal = () => {
+    setShowCompleteConfirmModal(false);
+    setTaskToComplete(null); 
+  };
+  const handleCompleteStatusClick = (taskId) => {
+    setTaskToComplete(taskId);
+    setShowCompleteConfirmModal(true);
+  };
+  
   const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
   const categoryColors = {
     Trabalho: '#f08080',
@@ -263,7 +327,7 @@ function Tarefas() {
             {showMenu == task.id && (
               <div className="task-menu" ref={menuRef}>
                 <button className="btn btn-danger" onClick={() => handleDeleteClick(task.id)}><i className="fas fa-trash"></i></button>
-                <button className="btn btn-success"><i className="fas fa-check"></i></button>
+                <button className="btn btn-success" onClick={() => handleCompleteStatusClick(task.id)}><i className="fas fa-check"></i></button>
                 <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
                 <button className="btn btn-info"><i className="fas fa-expand"></i></button>
               </div>)}
@@ -399,6 +463,18 @@ function Tarefas() {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseConfirmModal}>Cancelar</Button>
           <Button variant="danger" onClick={handleDelete}>Excluir</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de Confirmação para Conclusão */}
+      <Modal show={showCompleteConfirmModal} onHide={handleCloseCompleteConfirmModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmação</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Você tem certeza que deseja marcar esta tarefa como completa?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseCompleteConfirmModal}>Cancelar</Button>
+          <Button variant="success button-completar-tarefa" onClick={handleComplete}>Marcar como Completa</Button>
         </Modal.Footer>
       </Modal>
     </div>

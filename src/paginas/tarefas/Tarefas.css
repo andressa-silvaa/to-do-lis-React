@@ -244,6 +244,11 @@ form{
     font-weight: 600;
     width: 150px;
   }
+  .button-completar-tarefa{
+    background-color: #478978; 
+    font-weight: 600;
+    width: 200px;
+  }
 @media (max-width:1000px) {
     .tarefas-completas {
         width: 60%;
