@@ -204,50 +204,50 @@ function Tarefas() {
       </div>
 
       <div className="card-container row">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <div className="col-md-4" key={task.id}>
-              <div className="task-card">
-                <div className="d-flex justify-content-between align-items-center position-relative">
-                  <h5 className="task-title">{task.titulo}</h5>
-                  <button className="btn btn-light mais" onClick={() => handleMenuToggle(task.id)}>
-                    <i className="fas fa-ellipsis-h"></i>
-                  </button>
-                  {showMenu === task.id && (
-                    <div className="task-menu" ref={menuRef}>
-                      <button className="btn btn-danger"><i className="fas fa-trash"></i></button>
-                      <button className="btn btn-success"><i className="fas fa-check"></i></button>
-                      <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
-                      <button className="btn btn-info"><i className="fas fa-expand"></i></button>
-                    </div>
-                  )}
-                </div>
-                <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
-                <div className="task-description-container">
-                  <p className="task-description">
-                    {task.descricao}
-                  </p>
-                </div>
-                <hr/>
-                <div className="d-flex justify-content-between task-category-container">
-                  <div className="task-category">
-                    <i className="fas fa-flag"></i> {format(new Date(task.dataCadastro), 'dd MMM yy', { locale: ptBR })}
-
-                  </div>
-                  <span 
-                    className="categoria" 
-                    style={{ backgroundColor: categoryColors[task.categoria] || '#9e9e9e' }} // Usa a cor correspondente à categoria
-                  >
-                    {task.categoria}
-                  </span>
-                </div>
+  {tasks.length > 0 ? (
+    tasks.filter(task => !task.completa).map((task) => (
+      <div className="col-md-4" key={task.id}>
+        <div className="task-card">
+          <div className="d-flex justify-content-between align-items-center position-relative">
+            <h5 className="task-title">{task.titulo}</h5>
+            <button className="btn btn-light mais" onClick={() => handleMenuToggle(task.id)}>
+              <i className="fas fa-ellipsis-h"></i>
+            </button>
+            {showMenu === task.id && (
+              <div className="task-menu" ref={menuRef}>
+                <button className="btn btn-danger"><i className="fas fa-trash"></i></button>
+                <button className="btn btn-success"><i className="fas fa-check"></i></button>
+                <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
+                <button className="btn btn-info"><i className="fas fa-expand"></i></button>
               </div>
+            )}
+          </div>
+          <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
+          <div className="task-description-container">
+            <p className="task-description">
+              {task.descricao}
+            </p>
+          </div>
+          <hr/>
+          <div className="d-flex justify-content-between task-category-container">
+            <div className="task-category">
+              <i className="fas fa-flag"></i> {format(new Date(task.dataCadastro), 'dd MMM yy', { locale: ptBR })}
             </div>
-          ))
-        ) : (
-          <p>Nenhuma tarefa encontrada.</p>
-        )}
+            <span 
+              className="categoria" 
+              style={{ backgroundColor: categoryColors[task.categoria] || '#9e9e9e' }} // Usa a cor correspondente à categoria
+            >
+              {task.categoria}
+            </span>
+          </div>
+        </div>
       </div>
+    ))
+  ) : (
+    <p>Nenhuma tarefa encontrada.</p>
+  )}
+</div>
+
 
   <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
