@@ -50,7 +50,7 @@ function Tarefas() {
           }
         });
 
-        console.log('Tarefas recebidas:', response.data);
+        //console.log('Tarefas recebidas:', response.data);
 
         const sortedTasks = response.data.sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro));
         
@@ -157,7 +157,6 @@ function Tarefas() {
   
       const method = isEditing ? 'put' : 'post';
   
-      // Garante que 'completa' seja um booleano
       const taskData = {
         ...formData,
         completa: formData.completa === true || formData.completa === 'true'
@@ -173,14 +172,15 @@ function Tarefas() {
   
       if (isEditing) {
         setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === taskToEditId ? response.data.tarefa : task
-            )
+          prevTasks.map(task =>
+            task.id === taskToEditId ? response.data.tarefa : task
+          )
         );
       } else {
-          setTasks(prevTasks => [response.data.tarefa, ...prevTasks]);
+        setTasks(prevTasks => [response.data.tarefa, ...prevTasks]);
       }
-    
+      
+  
       handleCloseModal();
       setAlert({
         show: true,
@@ -197,8 +197,6 @@ function Tarefas() {
       setTimeout(() => setAlert({ show: false }), 3000);
     }
   };
-  
-  
   
   
   
@@ -294,7 +292,6 @@ function Tarefas() {
   };
   
   const handleEditClick = (task) => {
-    console.log("Dados da tarefa", task);
     if (!task) {
       console.error("Tarefa não definida.");
       return;
@@ -416,8 +413,6 @@ function Tarefas() {
     <p>Nenhuma tarefa encontrada.</p>
   )}
 </div>
-
-
 
   <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
