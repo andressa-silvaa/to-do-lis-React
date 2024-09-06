@@ -18,6 +18,7 @@ function Tarefas() {
   const [taskToComplete, setTaskToComplete] = useState(null); 
   const [showCompleteConfirmModal, setShowCompleteConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const [taskToEditId, setTaskToEditId] = useState(null); // Estado para armazenar a ID da tarefa que será editada
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
@@ -27,6 +28,7 @@ function Tarefas() {
   });
   const [tasks, setTasks] = useState([]);
   const [errors, setErrors] = useState({});
+  const [isEditing, setIsEditing] = useState(false); // Estado para indicar se estamos no modo de edição
   const [alert, setAlert] = useState({ show: false, message: '', type: 'danger' });
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -85,7 +87,11 @@ function Tarefas() {
     navigate('/tarefas-completas');
   };
 
-  const handleShowModal = () => setShowModal(true);
+  const handleShowModal = () => {
+    setIsEditing(false); // Estamos criando uma nova tarefa, não editando
+    setShowModal(true);
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
     setFormData({
@@ -127,17 +133,15 @@ function Tarefas() {
   };
 
   const handleRadioChange = (e) => {
-    setFormData({ ...formData, completa: e.target.value === 'true' });
-  };
+    setFormData({ ...formData, completa: e.target.value === 'true' ? true : false });
+  };  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (!validate()) {
       setAlert({ show: true, message: 'Há campos inválidos. Por favor, corrija-os.', type: 'danger' });
-      setTimeout(() => {
-        setAlert({ show: false });
-      }, 3000);
+      setTimeout(() => setAlert({ show: false }), 3000);
       return;
     }
   
@@ -147,29 +151,57 @@ function Tarefas() {
         return;
       }
   
-      const response = await axios.post('https://to-do-list-api-eight.vercel.app/tarefa', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const url = isEditing
+        ? `https://to-do-list-api-eight.vercel.app/tarefa/${taskToEditId}`
+        : 'https://to-do-list-api-eight.vercel.app/tarefa';
+  
+      const method = isEditing ? 'put' : 'post';
+  
+      // Garante que 'completa' seja um booleano
+      const taskData = {
+        ...formData,
+        completa: formData.completa === true || formData.completa === 'true'
+      };
+  
+      const response = await axios[method](
+        url,
+        taskData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-      });
+      );
   
-      console.log('Tarefa adicionada com sucesso:', response.data);
-  
-      setTasks(prevTasks => [response.data.tarefa, ...prevTasks].sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro)));
-  
+      if (isEditing) {
+        setTasks(prevTasks =>
+            prevTasks.map(task =>
+                task.id === taskToEditId ? response.data.tarefa : task
+            )
+        );
+      } else {
+          setTasks(prevTasks => [response.data.tarefa, ...prevTasks]);
+      }
+    
       handleCloseModal();
-      setAlert({ show: true, message: 'Tarefa adicionada com sucesso!', type: 'success' });
-      setTimeout(() => {
-        setAlert({ show: false });
-      }, 3000);
+      setAlert({
+        show: true,
+        message: isEditing ? 'Tarefa editada com sucesso!' : 'Tarefa adicionada com sucesso!',
+        type: 'success',
+      });
+      setTimeout(() => setAlert({ show: false }), 3000);
     } catch (error) {
-      console.error('Erro ao adicionar a tarefa:', error);
-      setAlert({ show: true, message: 'Ocorreu um erro ao adicionar a tarefa: ' + (error.response?.data?.mensagem || error.message), type: 'danger' });
-      setTimeout(() => {
-        setAlert({ show: false });
-      }, 3000);
+      setAlert({
+        show: true,
+        message: 'Erro ao processar a tarefa: ' + (error.response?.data?.mensagem || error.message),
+        type: 'danger',
+      });
+      setTimeout(() => setAlert({ show: false }), 3000);
     }
   };
+  
+  
+  
+  
+  
 
   const handleDeleteClick = (taskId) => {
     setTaskToDelete(taskId);
@@ -233,7 +265,6 @@ function Tarefas() {
         categoria: taskToUpdate.categoria,  // Campo obrigatório 'categoria'
         prioridade: taskToUpdate.prioridade, // Campo obrigatório 'prioridade'
         completa: true,                      // Atualize o campo 'completa'
-        // Inclua outros campos que a API exige
       };
   
       const response = await axios.put(`https://to-do-list-api-eight.vercel.app/tarefa/${taskToComplete}`, updatedTaskData, {
@@ -262,11 +293,36 @@ function Tarefas() {
     }
   };
   
+  const handleEditClick = (task) => {
+    console.log("Dados da tarefa", task);
+    if (!task) {
+      console.error("Tarefa não definida.");
+      return;
+    }
+    
+    if (!task.id) {
+      console.error("Tarefa não tem ID:", task);
+      return;
+    }
   
+    setTaskToEditId(task.id);
+    setFormData({
+      titulo: task.titulo || "",
+      descricao: task.descricao || "",
+      prioridade: task.prioridade || "",
+      completa: task.completa || false,
+      categoria: task.categoria || "",
+    });
+    setIsEditing(true);
+    setShowModal(true);
+  };
+  
+
   const handleCloseCompleteConfirmModal = () => {
     setShowCompleteConfirmModal(false);
     setTaskToComplete(null); 
   };
+  
   const handleCompleteStatusClick = (taskId) => {
     setTaskToComplete(taskId);
     setShowCompleteConfirmModal(true);
@@ -313,55 +369,59 @@ function Tarefas() {
 
       <div className="card-container row">
   {tasks.length > 0 ? (
-    tasks.filter(task => !task.completa).map((task) => (
-      <div className="col-md-4" key={task.id}>
-        <div className="task-card">
-          <div className="d-flex justify-content-between align-items-center position-relative">
-            <h5 className="task-title">{task.titulo}</h5>
-            <button
-              className="btn btn-light mais"
-              onClick={() => handleMenuToggle(task.id)}
-            >
-              <i className="fas fa-ellipsis-h"></i>
-            </button>
-            {showMenu == task.id && (
-              <div className="task-menu" ref={menuRef}>
-                <button className="btn btn-danger" onClick={() => handleDeleteClick(task.id)}><i className="fas fa-trash"></i></button>
-                <button className="btn btn-success" onClick={() => handleCompleteStatusClick(task.id)}><i className="fas fa-check"></i></button>
-                <button className="btn btn-warning"><i className="fas fa-edit"></i></button>
-                <button className="btn btn-info"><i className="fas fa-expand"></i></button>
-              </div>)}
-          </div>
-          <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
-          <div className="task-description-container">
-            <p className="task-description">
-              {task.descricao}
-            </p>
-          </div>
-          <hr/>
-          <div className="d-flex justify-content-between task-category-container">
-            <div className="task-category">
-              <i className="fas fa-flag"></i> {format(new Date(task.dataCadastro), 'dd MMM yy', { locale: ptBR })}
+    tasks
+      .filter(task => task && task.completa !== undefined && !task.completa) // Verifica se task existe e se "completa" não é undefined
+      .map((task) => (
+        <div className="col-md-4" key={task.id}>
+          <div className="task-card">
+            <div className="d-flex justify-content-between align-items-center position-relative">
+              <h5 className="task-title">{task.titulo}</h5>
+              <button
+                className="btn btn-light mais"
+                onClick={() => handleMenuToggle(task.id)}
+              >
+                <i className="fas fa-ellipsis-h"></i>
+              </button>
+              {showMenu == task.id && (
+                <div className="task-menu" ref={menuRef}>
+                  <button className="btn btn-danger" onClick={() => handleDeleteClick(task.id)}><i className="fas fa-trash"></i></button>
+                  <button className="btn btn-success" onClick={() => handleCompleteStatusClick(task.id)}><i className="fas fa-check"></i></button>
+                  <button className="btn btn-warning" onClick={() => handleEditClick(task)}><i className="fas fa-edit"></i></button>
+                  <button className="btn btn-info"><i className="fas fa-expand"></i></button>
+                </div>
+              )}
             </div>
-            <span 
-              className="categoria" 
-              style={{ backgroundColor: categoryColors[task.categoria] || '#9e9e9e' }} // Usa a cor correspondente à categoria
-            >
-              {task.categoria}
-            </span>
+            <div className={`task-priority ${task.prioridade}`}>{task.prioridade}</div>
+            <div className="task-description-container">
+              <p className="task-description">
+                {task.descricao}
+              </p>
+            </div>
+            <hr />
+            <div className="d-flex justify-content-between task-category-container">
+              <div className="task-category">
+                <i className="fas fa-flag"></i> {format(new Date(task.dataCadastro), 'dd MMM yy', { locale: ptBR })}
+              </div>
+              <span
+                className="categoria"
+                style={{ backgroundColor: categoryColors[task.categoria] || '#9e9e9e' }} // Usa a cor correspondente à categoria
+              >
+                {task.categoria}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    ))
+      ))
   ) : (
     <p>Nenhuma tarefa encontrada.</p>
   )}
 </div>
 
 
+
   <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Adicionar Tarefa</Modal.Title>
+          <Modal.Title>{isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -448,7 +508,7 @@ function Tarefas() {
             </Form.Group>
             <Modal.Footer>
               <Button variant="primary" type="submit" className='custom-button'>
-                Adicionar
+                {isEditing ? 'Salvar Alterações' : 'Adicionar'}
               </Button>
             </Modal.Footer>
           </Form>
