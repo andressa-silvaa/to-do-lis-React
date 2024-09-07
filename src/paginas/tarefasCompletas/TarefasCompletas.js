@@ -100,8 +100,13 @@ function TarefasCompletas() {
   };
 
   const validate = () => {
+    if (formData.completa == 1) {
+      formData.completa = true;
+    }
+    else{
+      formData.completa = false;
+    }
     const newErrors = {};
-
     if (!formData.titulo || formData.titulo.length < 3 || formData.titulo.length > 100) {
       newErrors.titulo = 'O título deve ter entre 3 e 100 caracteres.';
     }
@@ -164,6 +169,7 @@ function TarefasCompletas() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+  
       if (isEditing) {
         setTasks(prevTasks =>
           prevTasks.map(task =>
@@ -191,6 +197,7 @@ function TarefasCompletas() {
       setTimeout(() => setAlert({ show: false }), 3000);
     }
   };
+  
   
   const handleDeleteClick = (taskId) => {
     setTaskToDelete(taskId);

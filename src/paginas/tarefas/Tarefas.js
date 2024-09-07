@@ -109,7 +109,6 @@ function Tarefas() {
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.titulo || formData.titulo.length < 3 || formData.titulo.length > 100) {
       newErrors.titulo = 'O título deve ter entre 3 e 100 caracteres.';
     }
