@@ -155,6 +155,11 @@ hr{
     width: 50px;
     text-align: center;
 }
+.button-restaurar-tarefa{
+    background-color: #478978; 
+    font-weight: 600;
+    width: 200px;
+}
 @media (max-width:1000px) {
     .tarefas-completas-completas {
         width: 60%;
@@ -167,5 +172,8 @@ hr{
     }
     .tarefas-pendentes-completas {
         width: 100%;
+    }
+    .button-restaurar-tarefa, .button-cancelar{
+        font-size: 0.9em;
     }
 }

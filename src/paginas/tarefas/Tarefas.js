@@ -538,7 +538,7 @@ function Tarefas() {
         </Modal.Header>
         <Modal.Body>Você tem certeza que deseja marcar esta tarefa como completa?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCompleteConfirmModal}>Cancelar</Button>
+          <Button variant="secondary button-cancelar" onClick={handleCloseCompleteConfirmModal}>Cancelar</Button>
           <Button variant="success button-completar-tarefa" onClick={handleComplete}>Marcar como Completa</Button>
         </Modal.Footer>
       </Modal>

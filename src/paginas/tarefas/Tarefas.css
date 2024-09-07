@@ -265,4 +265,7 @@ form{
     .nova-tarefa{
         width: 100%;
     }
+    .button-completar-tarefa,.button-cancelar{
+        font-size: 0.9em;
+      }
 }
