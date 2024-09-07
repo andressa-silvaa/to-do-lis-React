@@ -18,7 +18,8 @@ function Tarefas() {
   const [taskToComplete, setTaskToComplete] = useState(null); 
   const [showCompleteConfirmModal, setShowCompleteConfirmModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
-  const [taskToEditId, setTaskToEditId] = useState(null); // Estado para armazenar a ID da tarefa que será editada
+  const [taskToEditId, setTaskToEditId] = useState(null);
+  const [taskToSeeId, setTaskToSeeId] = useState(null);
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
@@ -28,7 +29,8 @@ function Tarefas() {
   });
   const [tasks, setTasks] = useState([]);
   const [errors, setErrors] = useState({});
-  const [isEditing, setIsEditing] = useState(false); // Estado para indicar se estamos no modo de edição
+  const [isEditing, setIsEditing] = useState(false); 
+  const [isSeeing, setIsSeeing] = useState(false); 
   const [alert, setAlert] = useState({ show: false, message: '', type: 'danger' });
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -88,12 +90,13 @@ function Tarefas() {
   };
 
   const handleShowModal = () => {
-    setIsEditing(false); // Estamos criando uma nova tarefa, não editando
+    setIsEditing(false); 
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setIsSeeing(false);
     setFormData({
       titulo: '',
       descricao: '',
@@ -255,14 +258,12 @@ function Tarefas() {
         console.error('Tarefa não encontrada');
         return;
       }
-  
-      // Crie um objeto contendo todos os campos necessários para a atualização
       const updatedTaskData = {
-        titulo: taskToUpdate.titulo,        // Campo obrigatório 'titulo'
-        descricao: taskToUpdate.descricao,  // Campo opcional (ou obrigatório, se aplicável)
-        categoria: taskToUpdate.categoria,  // Campo obrigatório 'categoria'
-        prioridade: taskToUpdate.prioridade, // Campo obrigatório 'prioridade'
-        completa: true,                      // Atualize o campo 'completa'
+        titulo: taskToUpdate.titulo,        
+        descricao: taskToUpdate.descricao,  
+        categoria: taskToUpdate.categoria,  
+        prioridade: taskToUpdate.prioridade, 
+        completa: true,                      
       };
   
       const response = await axios.put(`https://to-do-list-api-eight.vercel.app/tarefa/${taskToComplete}`, updatedTaskData, {
@@ -271,7 +272,6 @@ function Tarefas() {
         }
       });
   
-      // Atualize a lista de tarefas no estado local
       setTasks(prevTasks => prevTasks.map(task =>
         task.id === taskToComplete ? { ...task, completa: true } : task
       ));
@@ -292,15 +292,6 @@ function Tarefas() {
   };
   
   const handleEditClick = (task) => {
-    if (!task) {
-      console.error("Tarefa não definida.");
-      return;
-    }
-    
-    if (!task.id) {
-      console.error("Tarefa não tem ID:", task);
-      return;
-    }
   
     setTaskToEditId(task.id);
     setFormData({
@@ -323,6 +314,18 @@ function Tarefas() {
   const handleCompleteStatusClick = (taskId) => {
     setTaskToComplete(taskId);
     setShowCompleteConfirmModal(true);
+  };
+  const handleViewClick = (task) => {
+    setTaskToSeeId(task.id);
+    setFormData({
+      titulo: task.titulo || "",
+      descricao: task.descricao || "",
+      prioridade: task.prioridade || "",
+      completa: task.completa || false,
+      categoria: task.categoria || "",
+    });
+    setIsSeeing(true);
+    setShowModal(true);
   };
   
   const categories = ['Trabalho', 'Pessoal', 'Estudo', 'Casa', 'Saúde', 'Compras', 'Projetos', 'Eventos', 'Finanças', 'Lazer', 'Outro'];
@@ -384,7 +387,7 @@ function Tarefas() {
                   <button className="btn btn-danger" onClick={() => handleDeleteClick(task.id)}><i className="fas fa-trash"></i></button>
                   <button className="btn btn-success" onClick={() => handleCompleteStatusClick(task.id)}><i className="fas fa-check"></i></button>
                   <button className="btn btn-warning" onClick={() => handleEditClick(task)}><i className="fas fa-edit"></i></button>
-                  <button className="btn btn-info"><i className="fas fa-expand"></i></button>
+                  <button className="btn btn-info" onClick={() => handleViewClick(task)}><i className="fas fa-expand"></i></button>
                 </div>
               )}
             </div>
@@ -429,6 +432,7 @@ function Tarefas() {
                 value={formData.titulo}
                 onChange={handleChange}
                 isInvalid={!!errors.titulo}
+                disabled={isSeeing}
               />
               <Form.Control.Feedback type="invalid">{errors.titulo}</Form.Control.Feedback>
             </Form.Group>
@@ -443,6 +447,7 @@ function Tarefas() {
                 value={formData.descricao}
                 onChange={handleChange}
                 isInvalid={!!errors.descricao}
+                disabled={isSeeing}
               />
               <Form.Control.Feedback type="invalid">{errors.descricao}</Form.Control.Feedback>
             </Form.Group>
@@ -454,6 +459,7 @@ function Tarefas() {
                 name="prioridade"
                 value={formData.prioridade}
                 onChange={handleChange}
+                disabled={isSeeing}
               >
                 <option value="alta">Alta</option>
                 <option value="media">Média</option>
@@ -474,6 +480,7 @@ function Tarefas() {
                 value={formData.categoria}
                 onChange={handleChange}
                 isInvalid={!!errors.categoria}
+                disabled={isSeeing}
               >
                 <option value="">Selecione uma categoria</option>
                 {categories.map((cat) => (
@@ -491,6 +498,7 @@ function Tarefas() {
                 value="true"
                 checked={formData.completa == true}
                 onChange={handleRadioChange}
+                disabled={isSeeing}
               />
               <Form.Check
                 type="radio"
@@ -499,12 +507,14 @@ function Tarefas() {
                 value="false"
                 checked={formData.completa == false}
                 onChange={handleRadioChange}
+                disabled={isSeeing}
               />
             </Form.Group>
             <Modal.Footer>
+            {!isSeeing && (
               <Button variant="primary" type="submit" className='custom-button'>
                 {isEditing ? 'Salvar Alterações' : 'Adicionar'}
-              </Button>
+              </Button>)}
             </Modal.Footer>
           </Form>
         </Modal.Body>
