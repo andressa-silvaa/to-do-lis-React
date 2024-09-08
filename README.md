@@ -50,7 +50,7 @@ A API utilizada neste projeto está disponível em um repositório separado. Voc
 
 ## 🕹 Executando Localmente
 
-1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-projeto.git`
+1. Clone o repositório: `git clone https://github.com/andressa-silvaa/to-do-lis-React.git`
 2. Instale as Dependências: `npm install`
 3. Configuração da API: `O projeto consome uma API que está hospedada separadamente. Para utilizar o sistema em desenvolvimento local, siga os seguintes passos:`
  - Clone o repositório da API: `git clone https://github.com/seu-usuario/seu-repositorio-api.git
