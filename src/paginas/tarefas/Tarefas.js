@@ -36,7 +36,7 @@ function Tarefas() {
   const buttonRef = useRef(null);
 
   const navigate = useNavigate();
-  const { token } = useUser();
+  const { token,user } = useUser();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -45,8 +45,8 @@ function Tarefas() {
           console.error('Token não encontrado no contexto');
           return;
         }
-
-        const response = await axios.get('https://to-do-list-api-eight.vercel.app/tarefas', {
+        
+        const response = await axios.get(`https://to-do-list-api-eight.vercel.app/tarefas/${user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

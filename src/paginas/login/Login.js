@@ -12,7 +12,7 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [senhaTouched, setSenhaTouched] = useState(false);
 
@@ -46,23 +46,25 @@ function Login() {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-
+  
     setEmailTouched(true);
     setSenhaTouched(true);
-
+  
     if (!validate()) {
       setAlert({ show: true, message: 'Há campos inválidos. Por favor, corrija-os.', type: 'danger' });
+      setTimeout(() => setAlert({ show: false }), 2000);
       return;
     }
-
+  
+    setIsLoading(true); // Inicia o carregamento
+  
     try {
       const response = await axios.post('https://to-do-list-api-eight.vercel.app/login', {
         email,
         senha
       });
-      
-
-      login(response.data.usuario, response.data.token); 
+  
+      login(response.data.usuario, response.data.token);
       
       setAlert({ show: true, message: 'Login realizado com sucesso!', type: 'success' });
       setTimeout(() => navigate('/tarefas'), 1000);
@@ -72,9 +74,12 @@ function Login() {
       } else {
         setAlert({ show: true, message: 'Ocorreu um erro ao fazer login: ' + error.message, type: 'danger' });
       }
+      setTimeout(() => setAlert({ show: false }), 2000);
+    } finally {
+      setIsLoading(false); // Finaliza o carregamento
     }
   }, [email, senha, navigate, validate, login]);
-
+  
   const handleRegisterClick = () => {
     navigate('/cadastro');
   };
@@ -127,10 +132,14 @@ function Login() {
                 {senhaTouched && errors.senha && <div className="invalid-feedback">{errors.senha}</div>}
               </div>
               <div className="mb-3">
-                <a href="/forgot-password">Esqueceu a senha?</a>
               </div>
               <div className="d-flex justify-content-between">
-                <button type="submit" className="btn btn-success me-2 login-entrar">Entrar</button>
+                <button type="submit" className="btn btn-success me-2 login-entrar" disabled={isLoading}>
+                  {isLoading ? (
+                    <span className="btn btn-success me-2 login-entrar" role="status" aria-hidden="true"></span>
+                  ) : 'Entrar'}
+                </button>
+
                 <button type="button" className="btn btn-success login-cadastrar" onClick={handleRegisterClick}>Cadastrar</button>
               </div>
             </form>

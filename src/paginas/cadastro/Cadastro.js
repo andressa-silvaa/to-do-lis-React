@@ -11,7 +11,7 @@ function Cadastro() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
   const [nomeTouched, setNomeTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [senhaTouched, setSenhaTouched] = useState(false);
@@ -61,11 +61,13 @@ function Cadastro() {
     const isValid = validate();
     if (!isValid) {
       setAlert({ show: true, message: 'Há campos inválidos. Por favor, corrija-os.', type: 'danger' });
+      setTimeout(() => setAlert({ show: false }), 2000);
       return;
     }
 
     try {
-      console.log('Iniciando requisição para a API...');
+
+      setIsLoading(true);
       const response = await axios.post('https://to-do-list-api-eight.vercel.app/usuario', {
         nome,
         email,
@@ -75,6 +77,7 @@ function Cadastro() {
       // Supondo que a resposta é um objeto JSON com a mensagem
       if (response.data.mensagem === 'Já existe usuário cadastrado com o e-mail informado.') {
         setAlert({ show: true, message: response.data.mensagem, type: 'danger' });
+        setTimeout(() => setAlert({ show: false }), 2000);
       } else {
         setAlert({ show: true, message: 'Usuário cadastrado com sucesso!', type: 'success' });
         setTimeout(() => navigate('/login'), 1000);
@@ -88,6 +91,9 @@ function Cadastro() {
         // Erro ao configurar a requisição ou outro erro
         setAlert({ show: true, message: 'Ocorreu um erro ao cadastrar: ' + error.message, type: 'danger' });
       }
+      setTimeout(() => setAlert({ show: false }), 2000);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -157,7 +163,11 @@ function Cadastro() {
               </div>
               <div className="d-flex justify-content-between">
                 <button type="button" className="btn btn-success me-2 entrar" onClick={() => navigate('/login')}>Entrar</button>
-                <button type="submit" className="btn btn-success cadastrar">Cadastrar</button>
+                <button type="submit" className="btn btn-success cadastrar" disabled={isLoading}>
+                  {isLoading ? (
+                    <span className="btn btn-success me-2 login-entrar" role="status" aria-hidden="true"></span>
+                  ) : 'Cadastrar'}
+                </button>
               </div>
             </form>
           </div>
