@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# 📝 To-Do List App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é o repositório da aplicação de To-Do List em React, que consome uma API Node.js e Express para gerenciar tarefas de usuários. O objetivo é fornecer um sistema onde os usuários possam cadastrar-se, fazer login, e gerenciar suas tarefas de forma prática e intuitiva.
 
-## Available Scripts
 
-In the project directory, you can run:
+## 🔗 Demonstração
 
-### `npm start`
+A aplicação está disponível para uso [aqui](https://to-do-lis-react.vercel.app/login).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🎯 Funcionalidades
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Cadastro de usuários**: Novos usuários podem criar uma conta para acessar o sistema.
+  
+<img align="center" alt="Cadastro" height="300em" width="600em" src="https://i.imgur.com/bsOsByd.png"/>
 
-### `npm test`
+- **Login de usuários**: Usuários já cadastrados podem fazer login no sistema.
+  
+<img align="center" alt="Login" height="300em" width="600em" src="https://i.imgur.com/OZvpHb4.png"/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Gerenciamento de tarefas**:
+   
+  - Visualizar os detalhes completos de uma tarefa ao clicar no ícone de 3 pontinhos.
+    
+    <img align="center" alt="Login" height="300em" width="600em" src="https://i.imgur.com/du53VzU.png"/>
+    
+  - Adicionar novas tarefas com título, descrição, prioridade (alta, média, baixa), categoria e status (pendente ou concluída).
+    
+    <img align="center" alt="Login" height="300em" width="400em" src="https://i.imgur.com/ykJc2To.png"/>
+  
+  - Editar tarefas existentes.
+    
+    <img align="center" alt="Login" height="300em" width="400em" src="https://i.imgur.com/YThDJOi.png"/>
+    
+  - Excluir tarefas.
+    
+     <img align="center" alt="Login" height="300em" width="600em" src="https://i.imgur.com/CfDpiFi.png"/>
+     
+  - Marcar tarefas pendentes como concluídas.
+    
+    <img align="center" alt="Login" height="300em" width="600em" src="https://i.imgur.com/wpDJqS0.png"/>
+    
+  - Reverter tarefas concluídas para o status de pendente.
+    
+   <img align="center" alt="Login" height="300em" width="600em" src="https://i.imgur.com/Fap5QpX.png"/>
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🗃 Repositório da API
+A API utilizada neste projeto está disponível em um repositório separado. Você pode acessá-lo e seguir as instruções para configurá-la em um ambiente local ou entender melhor sua estrutura [aqui](https://to-do-lis-react.vercel.app/login).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🕹 Executando Localmente
 
-### `npm run eject`
+1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-projeto.git`
+2. Instale as Dependências: `npm install`
+3. Configuração da API: `O projeto consome uma API que está hospedada separadamente. Para utilizar o sistema em desenvolvimento local, siga os seguintes passos:`
+ - Clone o repositório da API: `git clone https://github.com/seu-usuario/seu-repositorio-api.git
+cd seu-repositorio-api`
+ - Crie um banco de dados MySQL local e configure as variáveis de ambiente no arquivo .env da API. Exemplo de .env:
+- - ` DB_HOST=seu-host`
+- - `DB_USER=seu-usuario`
+- - `DB_PASSWORD=sua-senha`
+- - `DB_NAME=seu-banco-de-dados`
+ - Instale as dependências da API e inicie o servidor:
+ - - `npm install`
+ - - `npm start`
+4. Configuração do Front-End:
+- No ambiente local, será necessário alterar as URLs das requisições para que apontem para a API local. Os arquivos a serem modificados são:
+- - `src/pages/login.js`
+- - `src/pages/cadastro.js`
+- - `src/pages/tarefas.js`
+- - `src/pages/tarefasCompletas.js`
+- - `Substitua as URLs de requisição pela URL local onde a API está rodando (por exemplo, http://localhost:3000).`
+5. Executar o Projeto: `Após configurar a API, execute o projeto React: npm start`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 💻 Tecnologias Utilizadas
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Frontend:** React, HTML, CSS, javascript, Bootstrap, Axios, etc.
+- **BackEnd:** Node.js, JavaScript, Express, Knex, MySql, etc. 
+  
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 💡 Contribuições
 
-## Learn More
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 👩Autor
+>Andressa Silva
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
