@@ -419,7 +419,7 @@ function Tarefas() {
   <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
         <Modal.Title>
-          {isSeeing ? 'Visualizando uma Tarefa' : (isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa')}
+          {isSeeing ? 'Ver Tarefa' : (isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa')}
         </Modal.Title>
         </Modal.Header>
         <Modal.Body>
