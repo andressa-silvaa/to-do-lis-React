@@ -46,15 +46,14 @@ A aplicação está disponível para uso [aqui](https://to-do-lis-react.vercel.a
 
 
 ## 🗃 Repositório da API
-A API utilizada neste projeto está disponível em um repositório separado. Você pode acessá-lo e seguir as instruções para configurá-la em um ambiente local ou entender melhor sua estrutura [aqui](https://to-do-lis-react.vercel.app/login).
+A API utilizada neste projeto está disponível em um repositório separado. Você pode acessá-lo e seguir as instruções para configurá-la em um ambiente local ou entender melhor sua estrutura [aqui](https://github.com/andressa-silvaa/to-do-list-API).
 
 ## 🕹 Executando Localmente
 
 1. Clone o repositório: `git clone https://github.com/andressa-silvaa/to-do-lis-React.git`
 2. Instale as Dependências: `npm install`
 3. Configuração da API: `O projeto consome uma API que está hospedada separadamente. Para utilizar o sistema em desenvolvimento local, siga os seguintes passos:`
- - Clone o repositório da API: `git clone https://github.com/seu-usuario/seu-repositorio-api.git
-cd seu-repositorio-api`
+ - Clone o repositório da API: `git clone https://github.com/andressa-silvaa/to-do-list-API.git`
  - Crie um banco de dados MySQL local e configure as variáveis de ambiente no arquivo .env da API. Exemplo de .env:
 - - ` DB_HOST=seu-host`
 - - `DB_USER=seu-usuario`
